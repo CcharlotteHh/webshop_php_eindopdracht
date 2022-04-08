@@ -14,18 +14,31 @@ include 'db.php';
 <body>
     <div class="container">
     <div class="row justify-content-center">
-    <form action="process.php" method="post">
+    <form action="process.php" method="post" enctype="multipart/form-data">
         <div class="form-group">
         <input type="text" class=form-control placeholder="name" name="product_name">
         </div>
         <div class="form-group">
         <input type="text" class=form-control placeholder="description" name="product_description">
         </div>
-        <!-- for category_id
+        <!-- for category_id-->
         <div class="form-group">
-        <input type="text" class=form-control placeholder="category_id" name="product_category_id">
+        <label for="cars">Choose a category:</label>
+        <select  name="product_category_name">
+            
+            <?php
+                $sql = "select category_id, name from category";
+                $result = mysqli_query($conn, $sql);
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                ?>
+                <option value="<?php echo $row['category_id'] ?>"><?php echo $row['name'] ?></option>
+              
+           
+        <?php
+                }?>
+        </select>    
         </div>
-        -->
         <div class="form-group">
         <input type="text" class=form-control placeholder="price" name="product_price">
         </div>

@@ -22,19 +22,25 @@ echo "<a href='logout.php'> Logout</a> ";
     <div class="row justify-content-center">
         <table class="table table-bordered">
             <tr>
-                <th style="width:20%"> Category id</th>
-                <th style="width:50%"> Category name</th>
+                <th style="width:20%"> Product id</th>
+                <th style="width:20%"> Product name</th>
+                <th>Category name</th>
+                <th>Image</th>
                 <th style="width:30%" colspan="3"> Operations</th>
             </tr>
             <tr>
                 <?php
-                $sql = "select * from product";
+                $sql = "select product.product_id, product.name, product_image, category.name as category_name, category.description from product
+                INNER JOIN category ON product.category_id = category.category_id";
                 $result = mysqli_query($conn, $sql);
 
                 while ($row = mysqli_fetch_assoc($result)) {
                 ?>
                 <td><?php echo $row['product_id'] ?></td>
                 <td><?php echo $row['name'] ?></td>
+                <td><?php echo $row['category_name'] ?></td>
+                <td> <img src="product_image/<?php echo $row['product_image']?>" alt="" style="width: 20px;"></td>
+                
                 <td> <a href="process.php?Del=<?php echo $row['product_id'] ?>" class="btn btn-danger"><span class="fa fa-trash"></span></a></td>
                 <td><a href="product_detail_edit.php?opt=edit_post&p_id=<?php echo $row['product_id'];?>" class="btn btn-success"><span class="fa fa-edit"></td>
              </tr>
@@ -60,4 +66,6 @@ echo "<a href='logout.php'> Logout</a> ";
         </div>
         </div>
         <td> <a href="product_add.php" class="btn btn-success"><span class="fa-solid fa-plus"></span></a></td>
+        <td> <a href="category_add.php" class="btn btn-success"><span class="fa-solid fa-plus"> Category</span></a></td>
+
 </body>

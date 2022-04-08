@@ -50,6 +50,23 @@ include 'db.php';
                     <textarea type="text" class="form-control" name="description" value="" cols="30" rows="10">    <?php echo $product_description; ?>   </textarea>
                 </div>
                 <div class="form-group">
+                    <label for="cars">Choose a category:</label>
+                    <select name="product_category_name">
+
+                        <?php
+                        $sql = "select category_id, name from category";
+                        $result = mysqli_query($conn, $sql);
+
+                        while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+                            <option value="<?php echo $row['category_id'] ?>"><?php echo $row['name'] ?></option>
+
+
+                        <?php
+                        } ?>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="price">Price</label>
                     <input type="number" name="price" value="<?php echo $product_price; ?>" placeholder="Price" class="form-control pb-2">
                 </div>
