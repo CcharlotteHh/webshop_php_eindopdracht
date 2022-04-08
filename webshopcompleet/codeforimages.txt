@@ -1,0 +1,101 @@
+<?php
+
+include 'db.php';
+
+if (isset($_POST["newproduct_submit"])) {
+    $product_name = $_POST["product_name"];
+    $product_description = $_POST["product_description"];
+    $product_price = $_POST["product_price"];
+    $product_color = $_POST["product_color"];
+    $product_weight = $_POST["product_weight"];
+    $product_active = $_POST["product_active"];
+    $product_image = $_FILES['product_image'];
+
+    $product_image_name = $_FILES['product_image']['name']; // product image name
+    $product_image_tmpName = $_FILES['product_image']['tmp_name'];// tmp location before product image gets uploaded to the product_image folder
+    $product_image_size = $_FILES['product_image']['size']; // size of product image 
+    $product_image_error = $_FILES['product_image']['error']; // is there an error with the image upload or not
+    $product_image_type = $_FILES['product_image']['type']; 
+    $fileExt = explode('.', $product_image_name); // separate $product_image
+    $fileActualExt = strtolower(end($fileExt));
+    $allowed = array('jpg', 'jpeg', 'png');
+
+    if (in_array($fileActualExt, $allowed)) {
+        if ($product_image_error === 0) {
+            if($product_image_size <1000000){
+            $image_new_name = uniqid('','true'). ".".$fileActualExt;
+            $fileDestination = 'product_image/'.$image_new_name;
+            move_uploaded_file($product_image_tmpName,$fileDestination);
+            }else{
+                echo'FiLE IS TOO BIG';
+            }
+        } else {
+            echo 'error uploading file';
+        }
+    } else {
+        echo "choose valid image extension";
+    }
+
+    $query = "insert into product (name, description, price, color, weight, product_image)
+    values ('$product_name','$product_description',$product_price,'$product_color',$product_weight,'$image_new_name')";
+    $result = mysqli_query($conn, $query);
+    header('Location: index.php');
+}
+
+<aside class="filter">
+                <form action="" method="GET">
+
+                    <button type="submit" class="custom_button">search</button>
+                    <h4>Color</h4>
+                    <?php
+                    $filter_query = 'SELECT * FROM product';
+                    $result = mysqli_query($conn, $filter_query);
+                    if (mysqli_num_rows($result) > 0) {
+                        foreach ($result as $resultlist) {
+                            $checked = [];
+                            if (isset($_GET['colorlist'])) {
+                                $checked = $_GET['colorlist'];
+                            }
+
+
+                    ?>
+                            <div>
+                                <input type="checkbox" name="colorlist[]" value="<?php echo $resultlist['color'] ?>" <?php if (in_array($resultlist['color'], $checked)) {
+                                                                                                                            echo 'checked';                                                                                                          } ?>>
+                                <?php echo $resultlist['color']; ?>
+                            </div>
+                    <?php
+                        }
+                    } else {
+                        echo "no products found";
+                    }
+                    ?>
+            </aside>
+            </form>
+            <div class="filtered-products">
+                <div class="articles">
+                    <?php
+                    $filter_query = 'SELECT * FROM product';
+                    $result = mysqli_query($conn, $filter_query);
+                    if (mysqli_num_rows($result) > 0) {
+                        foreach ($result as $resultlist) {
+                            $checked = [];
+                            if (isset($_GET['productlist'])) {
+                                $checked = $_GET['productlist'];
+                            }
+
+
+                    ?>
+                            <article class="filteredproduct">
+                                <?php echo $resultlist['name'];?>
+                                <?php echo $resultlist['color'];?>
+                            </article>
+                    <?php
+                        }
+                    } else {
+                        echo "no products found";
+                    }
+                    ?>
+                </div>
+            </div>
+        </main>
